@@ -25,12 +25,6 @@ typedef struct {
 
 static void
 mrb_thread_context_free(mrb_state *mrb, void *p) {
-  mrb_thread_context* context = (mrb_thread_context*) p;
-  if (p) {
-    if (context->mrb) mrb_close(context->mrb);
-    if (context->argv) free(context->argv);
-    free(p);
-  }
 }
 
 static const struct mrb_data_type mrb_thread_context_type = {
@@ -79,8 +73,6 @@ mrb_thread_join(mrb_state* mrb, mrb_value self) {
   Data_Get_Struct(mrb, value_context, &mrb_thread_context_type, context);
   pthread_join(context->thread, NULL);
   pthread_mutex_destroy(&mutex);
-  mrb_close(context->mrb);
-  context->mrb = NULL;
   return context->result;
 }
 
